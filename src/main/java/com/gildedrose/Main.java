@@ -1,5 +1,11 @@
 package com.gildedrose;
 
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
+import static java.lang.System.out;
+import static java.util.Optional.of;
+
 public class Main {
     static Item[] items = new Item[]{
             new Item("+5 Dexterity Vest", 10, 20), //
@@ -13,23 +19,18 @@ public class Main {
             new Item("Conjured Mana Cake", 3, 6)};
 
     public static void main(String[] args) {
-        System.out.println("OMGHAI!");
+        out.println("OMGHAI!");
 
         GildedRose app = new GildedRose(items);
 
-        int days = 2;
-        if (args.length > 0) {
-            days = Integer.parseInt(args[0]) + 1;
-        }
+        Integer days = of(args)
+                .filter(a -> a.length > 0)
+                .map(a -> Integer.parseInt(a[0]) + 1).orElse(2);
 
-        for (int i = 0; i < days; i++) {
-            System.out.println("-------- day " + i + " --------");
-            System.out.println("name, sellIn, quality");
-            for (Item item : items) {
-                System.out.println(item);
-            }
-            System.out.println();
-            app.updateQuality();
-        }
+        IntStream.range(0, days)
+                .peek(i -> out.println("-------- day " + i + " --------"))
+                .peek(i -> out.println("name, sellIn, quality"))
+                .peek(i -> Arrays.stream(items).forEach(out::println))
+                .forEach(i -> app.updateQuality());
     }
 }
